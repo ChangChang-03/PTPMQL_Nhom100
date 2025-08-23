@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html>
+<body>
+<h2>Hà Thu Trang</h2>
+<h2>Trường văn bản</h2>
+<p><strong>input type="text"</strong> định nghĩa một trường nhập văn bản một dòng:</p>
+<form action="/action_page.php">
+  <label for="fname">First name:</label><br>
+  <input type="text" id="fname" name="fname"><br>
+  <label for="lname">Last name:</label><br>
+  <input type="text" id="lname" name="lname"><br><br>
+  <input type="submit" value="Submit">
+</form>
+
+<p>Lưu ý rằng bản thân biểu mẫu không hiển thị.</p>
+<p>Cũng lưu ý rằng chiều rộng mặc định của trường văn bản là 20 ký tự.</p>
+</body>
+</html>
+
+<!---------------------------->
+
+<!DOCTYPE html>
+<html>
+<body>
+<h2>hà Thu Trang 2221050764</h2>
+<h2>Password field</h2>
+
+
+<p>Đầu vào <strong>type="password"</strong> định nghĩa một trường mật khẩu:</p>
+
+<form action="/action_page.php">
+  <label for="username">Username:</label><br>
+  <input type="text" id="username" name="username"><br>
+  <label for="pwd">Password:</label><br>
+  <input type="password" id="pwd" name="pwd"><br><br>
+  <input type="submit" value="Submit">
+</form>
+
+<p>Các ký tự trong trường mật khẩu được che đi (hiển thị dưới dạng dấu hoa thị hoặc vòng tròn).</p>
+
+</body>
+</html>
+<!---------------------------->
+
+<!DOCTYPE html>
+<html>
+<body>
+
+<form action="/action_page.php">
+  <label for="fname">First name:</label><br>
+  <input type="text" id="fname" name="fname" value="Trang"><br>
+  <label for="lname">Last name:</label><br>
+  <input type="text" id="lname" name="lname" value="Hà"><br><br>
+  <input type="submit">
+</form> 
+
+</body>
+</html>
+
+<!------------------------->
+
+<!DOCTYPE html>
+<html>
+<body>
+
+<h2>Reset Button</h2>
+
+<p><strong>Input type="reset"</strong> định nghĩa một nút đặt lại để đặt lại tất cả các giá trị biểu mẫu về giá trị mặc định của chúng:</p>
+
+<form action="/action_page.php">
+  <label for="fname">First name:</label><br>
+  <input type="text" id="fname" name="fname" value="Trang"><br>
+  <label for="lname">Last name:</label><br>
+  <input type="text" id="lname" name="lname" value="Hà"><br><br>
+  <input type="submit" value="Submit">
+  <input type="reset" value="Reset">
+</form> 
+
+<p>Nếu bạn thay đổi giá trị đầu vào rồi nhấp vào nút "Đặt lại", dữ liệu biểu mẫu sẽ được đặt lại về giá trị mặc định.</p>
+
+</body>
+</html>
+
+<!------------------------>
+
+<!DOCTYPE html>
+<html>
+<body>
+
+<h2>Radio Buttons</h2>
+<p><strong>Kiểu đầu vào="radio"</strong> định nghĩa một nút radio:</p>
+
+<p>Chọn ngôn ngữ web Trang yêu thích:</p>
+<form action="/action_page.php">
+  <input type="radio" id="html" name="fav_language" value="HTML">
+  <label for="html">HTML</label><br>
+  <input type="radio" id="css" name="fav_language" value="CSS">
+  <label for="css">CSS</label><br>
+  <input type="radio" id="javascript" name="fav_language" value="JavaScript">
+  <label for="javascript">JavaScript</label><br><br>
+  <input type="submit" value="Submit">
+</form> 
+
+</body>
+</html>
+
+<!----------------------->
+
+<!DOCTYPE html>
+<html>
+<body>
+
+<h2>Hà Thu Trang</h2>
+<input type="button" onclick="alert('Hello Trang!')" value="Click Me!">
+</body>
+</html>
+
+<!-------------------->
+
+<!DOCTYPE html>
+<html>
+<body>
+
+<h2>Hà Thu Trang 2221050764</h2>
+
+<p><strong>Kiểu đầu vào="color"</strong> được sử dụng cho các trường đầu vào cần chứa màu.</p>
+
+<form action="/action_page.php">
+  <label for="favcolor">Chọn màu sắc yêu thích của Trang:</label>
+  <input type="color" id="favcolor" name="favcolor" value="#ff0000">
+  <input type="submit" value="Submit">
+</form>
+
+<p><b>Lưu ý:</b> type="color" không được hỗ trợ trong Internet Explorer 11.</p>
+
+</body>
+</html>
+
+<!------------------>
+
+<!DOCTYPE html>
+<html>
+<body>
+
+<h2>Hà Thu Trang</h2>
+
+<p><strong>Kiểu nhập="date"</strong> được sử dụng cho các trường nhập liệu cần chứa ngày tháng.</p>
+
+<form action="/action_page.php">
+  <label for="birthday">Birthday:</label>
+  <input type="date" id="birthday" name="birthday">
+  <input type="submit" value="Submit">
+</form>
+
+</body>
+</html>
+
+<!------------------->
+

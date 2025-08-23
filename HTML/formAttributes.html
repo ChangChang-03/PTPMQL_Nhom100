@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html>
+<body>
+
+<h1>Hà Thu Trang 2221050764</h1>
+
+<p>Thuộc tính form chỉ định dạng mà phần tử đầu vào thuộc về.</p>
+
+<form action="/action_page.php" id="form1">
+  <label for="fname">First name:</label>
+  <input type="text" id="fname" name="fname"><br><br>
+  <input type="submit" value="Submit">
+</form>
+
+<p>Trường "Last name" bên dưới nằm ngoài phần tử biểu mẫu nhưng vẫn là một phần của biểu mẫu.</p>
+
+<label for="lname">Last name:</label>
+<input type="text" id="lname" name="lname" form="form1">
+
+</body>
+</html>
+
+<!---------------------->
+
+<!DOCTYPE html>
+<html>
+<body>
+
+<h1>Hà Thu Trang 2221050764</h1>
+
+p>Thuộc tính formaction chỉ định URL của tệp sẽ xử lý dữ liệu đầu vào khi biểu mẫu được gửi.</p>
+
+<form action="/action_page.php">
+  <label for="fname">First name:</label>
+  <input type="text" id="fname" name="fname"><br><br>
+  <label for="lname">Last name:</label>
+  <input type="text" id="lname" name="lname"><br><br>
+  <input type="submit" value="Submit">
+  <input type="submit" formaction="/action_page2.php" value="Submit as Admin">
+</form>
+
+</body>
+</html>
+<!--------------------->
+
+<!DOCTYPE html>
+<html>
+<body>
+
+<h1>Hà Thu Trang 221050764</h1>
+
+<p>Thuộc tính formmethod định nghĩa phương thức HTTP để gửi dữ liệu biểu mẫu đến URL hành động.</p>
+
+<form action="/action_page.php" method="get" target="_blank">
+  <label for="fname">First name:</label>
+  <input type="text" id="fname" name="fname"><br><br>
+  <label for="lname">Last name:</label>
+  <input type="text" id="lname" name="lname"><br><br>
+  <input type="submit" value="Submit using GET">
+  <input type="submit" formmethod="post" value="Submit using POST">
+</form>
+
+</body>
+</html>
+
+<!--------------------->
+
+<!DOCTYPE html>
+<html>
+<body>
+
+<h1>Hà Thu Trang 2221050764</h1>
+
+<form action="/action_page.php">
+  <label for="email">Nhập email của bạn:</label>
+  <input type="email" id="email" name="email" required><br><br>
+  <input type="submit" value="Submit">
+  <input type="submit" formnovalidate="formnovalidate" value="Submit without validation">
+</form>
+
+</body>
+</html>
+
+<!--------------------->
+
+
+<!DOCTYPE html>
+<html>
+<body>
+
+<h1>Hà Thu Trang 2221050764</h1>
+
+<p>Thuộc tính novalidate chỉ định rằng dữ liệu biểu mẫu không nên được xác thực khi gửi.</p>
+
+<form action="/action_page.php" novalidate>
+  <label for="email">Nhập vào email:</label>
+  <input type="email" id="email" name="email" required><br><br>
+  <input type="submit" value="Submit">
+</form>
+
+</body>
+</html>
