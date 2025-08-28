@@ -1,15 +1,15 @@
 {
   "format": 1,
   "restore": {
-    "D:\\PTPMQL_Nhom100\\MVC\\Mvc.csproj": {}
+    "D:\\PTPMQL_Nhom100\\MVC\\MVC.csproj": {}
   },
   "projects": {
-    "D:\\PTPMQL_Nhom100\\MVC\\Mvc.csproj": {
+    "D:\\PTPMQL_Nhom100\\MVC\\MVC.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\PTPMQL_Nhom100\\MVC\\Mvc.csproj",
-        "projectName": "Mvc",
-        "projectPath": "D:\\PTPMQL_Nhom100\\MVC\\Mvc.csproj",
+        "projectUniqueName": "D:\\PTPMQL_Nhom100\\MVC\\MVC.csproj",
+        "projectName": "MVC",
+        "projectPath": "D:\\PTPMQL_Nhom100\\MVC\\MVC.csproj",
         "packagesPath": "C:\\Users\\ADMIN\\.nuget\\packages\\",
         "outputPath": "D:\\PTPMQL_Nhom100\\MVC\\obj\\",
         "projectStyle": "PackageReference",

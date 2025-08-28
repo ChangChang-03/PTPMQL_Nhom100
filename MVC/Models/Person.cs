@@ -1,8 +1,8 @@
-namespace MVC.Models.Entities
+namespace MVC.Models
 {
     public class Person
     {
-        public string StudentID { get; set; } = default!;
         public string FullName { get; set; } = default!;
+        public string NamSinh { get; set; } = default!;
     }
 }

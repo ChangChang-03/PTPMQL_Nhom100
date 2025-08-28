@@ -1,6 +1,6 @@
 namespace MVC.Controllers
 {
-    using MVC.Models.Entities;
+    using MVC.Models;
     using Microsoft.AspNetCore.Mvc;
     public class PersonController : Controller
     {
@@ -12,7 +12,7 @@ namespace MVC.Controllers
         [HttpPost]
         public IActionResult Index(Person ps)
         {
-            ViewBag.Message = ps.StudentID + "-" + ps.FullName;
+            ViewBag.Message = ps.FullName + "-" + ps.NamSinh;
             return View();
         }
     }
