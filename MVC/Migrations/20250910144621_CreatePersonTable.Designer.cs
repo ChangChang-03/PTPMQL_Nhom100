@@ -11,8 +11,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace MVC.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250904075918_Create_table_Person")]
-    partial class Create_table_Person
+    [Migration("20250910144621_CreatePersonTable")]
+    partial class CreatePersonTable
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -26,16 +26,26 @@ namespace MVC.Migrations
 
             modelBuilder.Entity("MVC.Models.Person", b =>
                 {
-                    b.Property<string>("FullName")
-                        .HasColumnType("nvarchar(450)");
+                    b.Property<int>("PersonId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
 
-                    b.Property<string>("NamSinh")
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("PersonId"));
+
+                    b.Property<string>("Address")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.HasKey("FullName");
+                    b.Property<string>("FullName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
-                    b.ToTable("Persons");
+                    b.Property<int>("NamSinh")
+                        .HasColumnType("int");
+
+                    b.HasKey("PersonId");
+
+                    b.ToTable("Person");
                 });
 #pragma warning restore 612, 618
         }

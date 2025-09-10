@@ -1,6 +1,36 @@
-<h2>Du Lieu: @ViewBag.Message</h2>
-<form asp-action="Index" method="post">
-    <input type="text" name="FullName" placeholder="Nhap ho ten" />
-    <input type="number" name="NamSinh" placeholder="Nhap nam sinh" />
-    <input type="submit" value="Submit" />
-</form>
+@model IEnumerable<MVC.Models.Person>
+
+@{
+    ViewData["Title"] = "Index";
+
+}
+<h1 class="mb-3">Index</h1>
+
+<p>
+    <a asp-action="Create" class="btn btn-primary">Create new</a>
+</p>
+
+<table class="table table-bordered table-striped table-hover">
+    <thead class="table-dark">
+        <tr>
+            <th>@Html.DisplayNameFor(model => model.First().FullName)</th>
+            <th>@Html.DisplayNameFor(model => model.First().Address)</th>
+            <th>@Html.DisplayNameFor(model => model.First().NamSinh)</th>
+            <th style="width: 200px;">Thao tác</th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model)
+{
+        <tr>
+            <td>@Html.DisplayFor(modelItem => item.FullName)</td>
+            <td>@Html.DisplayFor(modelItem => item.Address)</td>
+            <td>@Html.DisplayFor(modelItem => item.NamSinh)</td>
+            <td>
+                <a asp-action="Edit" asp-route-id="@item.PersonId" class="btn btn-warning btn-sm">Sửa</a>
+                <a asp-action="Delete" asp-route-id="@item.PersonId" class="btn btn-danger btn-sm">Xóa</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>
