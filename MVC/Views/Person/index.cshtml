@@ -2,33 +2,37 @@
 
 @{
     ViewData["Title"] = "Index";
-
 }
-<h1 class="mb-3">Index</h1>
+
+<h1>Index</h1>
 
 <p>
-    <a asp-action="Create" class="btn btn-primary">Create new</a>
+    <a asp-action="Create">Create New</a>
 </p>
-
-<table class="table table-bordered table-striped table-hover">
-    <thead class="table-dark">
+<table class="table">
+    <thead>
         <tr>
-            <th>@Html.DisplayNameFor(model => model.First().FullName)</th>
-            <th>@Html.DisplayNameFor(model => model.First().Address)</th>
-            <th>@Html.DisplayNameFor(model => model.First().NamSinh)</th>
-            <th style="width: 200px;">Thao tác</th>
+            <th>
+                @Html.DisplayNameFor(model => model.FullName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Address)
+            </th>
+            <th></th>
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model)
-{
+@foreach (var item in Model) {
         <tr>
-            <td>@Html.DisplayFor(modelItem => item.FullName)</td>
-            <td>@Html.DisplayFor(modelItem => item.Address)</td>
-            <td>@Html.DisplayFor(modelItem => item.NamSinh)</td>
             <td>
-                <a asp-action="Edit" asp-route-id="@item.PersonId" class="btn btn-warning btn-sm">Sửa</a>
-                <a asp-action="Delete" asp-route-id="@item.PersonId" class="btn btn-danger btn-sm">Xóa</a>
+                @Html.DisplayFor(modelItem => item.FullName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Address)
+            </td>
+            <td>
+                <a asp-action="Edit" asp-route-id="@item.PersonId">Edit</a> |
+                <a asp-action="Delete" asp-route-id="@item.PersonId">Delete</a>
             </td>
         </tr>
 }

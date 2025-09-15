@@ -2,8 +2,6 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using MVC.Data;
 using MVC.Models;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace MVC.Controllers
 {
@@ -16,37 +14,19 @@ namespace MVC.Controllers
             _context = context;
         }
 
-        // GET: Person
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Person.ToListAsync());
+            return View(await _context.Persons.ToListAsync());
         }
 
-        // GET: Person/Details/5
-        public async Task<IActionResult> Details(int? id)
-        {
-            if (id == null)
-                return NotFound();
-
-            var person = await _context.Person
-                .FirstOrDefaultAsync(m => m.PersonId == id);
-
-            if (person == null)
-                return NotFound();
-
-            return View(person);
-        }
-
-        // GET: Person/Create
         public IActionResult Create()
         {
             return View();
         }
 
-        // POST: Person/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("PersonId,FullName,Address,NamSinh")] Person person)
+        public async Task<IActionResult> Create([Bind("PersonId,FullName,Address")] Person person)
         {
             if (ModelState.IsValid)
             {
@@ -57,26 +37,29 @@ namespace MVC.Controllers
             return View(person);
         }
 
-        // GET: Person/Edit/5
-        public async Task<IActionResult> Edit(int? id)
+        public async Task<IActionResult> Edit(string id)
         {
             if (id == null)
+            {
                 return NotFound();
+            }
 
-            var person = await _context.Person.FindAsync(id);
+            var person = await _context.Persons.FindAsync(id);
             if (person == null)
+            {
                 return NotFound();
-
+            }
             return View(person);
         }
 
-        // POST: Person/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("PersonId,FullName,Address,NamSinh")] Person person)
+        public async Task<IActionResult> Edit(string id, [Bind("PersonId,FullName,Address")] Person person)
         {
             if (id != person.PersonId)
+            {
                 return NotFound();
+            }
 
             if (ModelState.IsValid)
             {
@@ -88,47 +71,54 @@ namespace MVC.Controllers
                 catch (DbUpdateConcurrencyException)
                 {
                     if (!PersonExists(person.PersonId))
+                    {
                         return NotFound();
+                    }
                     else
+                    {
                         throw;
+                    }
                 }
                 return RedirectToAction(nameof(Index));
             }
             return View(person);
         }
 
-        // GET: Person/Delete/5
-        public async Task<IActionResult> Delete(int? id)
+        public async Task<IActionResult> Delete(string id)
         {
             if (id == null)
+            {
                 return NotFound();
+            }
 
-            var person = await _context.Person
+            var person = await _context.Persons
                 .FirstOrDefaultAsync(m => m.PersonId == id);
-
             if (person == null)
+            {
                 return NotFound();
+            }
 
             return View(person);
         }
 
-        // POST: Person/Delete/5
-        [HttpPost, ActionName("DeleteConfirmed")]
+        [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
+        public async Task<IActionResult> DeleteConfirmed(string id)
         {
-            var person = await _context.Person.FindAsync(id);
+            var person = await _context.Persons.FindAsync(id);
             if (person != null)
             {
-                _context.Person.Remove(person);
-                await _context.SaveChangesAsync();
+                _context.Persons.Remove(person);
             }
+
+            await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
-        private bool PersonExists(int id)
+        private bool PersonExists(string id)
         {
-            return _context.Person.Any(e => e.PersonId == id);
+            return _context.Persons.Any(e => e.PersonId == id);
         }
     }
 }
+
