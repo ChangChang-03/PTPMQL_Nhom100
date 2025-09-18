@@ -1,3 +1,4 @@
+using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -6,8 +7,9 @@ namespace MVC.Models
     [Table("Persons")]
     public class Person
     {
+        
         [Key]
-        public string PersonId { get; set; } = string.Empty;
+        public string? PersonId { get; set; }
 
         public string FullName { get; set; } = string.Empty;
 
