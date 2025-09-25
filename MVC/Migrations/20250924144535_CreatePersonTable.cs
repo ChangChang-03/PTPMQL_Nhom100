@@ -5,7 +5,7 @@
 namespace MVC.Migrations
 {
     /// <inheritdoc />
-    public partial class MergePersonEmployee : Migration
+    public partial class CreatePersonTable : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)

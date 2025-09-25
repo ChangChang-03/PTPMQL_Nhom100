@@ -9,7 +9,7 @@ namespace MVC.Models
     {
         
         [Key]
-        public string? PersonId { get; set; }
+        public string PersonId { get; set; }
 
         public string FullName { get; set; } = string.Empty;
 

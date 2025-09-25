@@ -15,5 +15,7 @@ namespace MVC.Data
 
        public DbSet<Employee> Employees { get; set; }
 
+       public DbSet<DaiLy> DaiLys { get; set; }
+
     }
 }

@@ -11,8 +11,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace MVC.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250918042256_MergePersonEmployee")]
-    partial class MergePersonEmployee
+    [Migration("20250924144535_CreatePersonTable")]
+    partial class CreatePersonTable
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
