@@ -62,18 +62,26 @@ namespace MVC.Controllers
         // POST: DaiLy/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("MaDaiLy,TenDaiLy,DiaChi,NguoiDaiDien,DienThoai")] DaiLy daiLy)
-        {
+       [HttpPost]
+       [ValidateAntiForgeryToken]
+       public async Task<IActionResult> Create([Bind("TenDaiLy,DiaChi,NguoiDaiDien,DienThoai")] DaiLy daiLy)
+       {
             if (ModelState.IsValid)
             {
-                _context.Add(daiLy);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
-            }
-            return View(daiLy);
-        }
+               var lastDL = _context.DaiLys
+                  .OrderByDescending(d => d.MaDaiLy)
+                  .FirstOrDefault();
+
+               var gen = new MVC.Models.Process.GenCode();
+               daiLy.MaDaiLy = gen.AutoGenCode(lastDL?.MaDaiLy, "DL", 2);
+
+              _context.Add(daiLy);
+              await _context.SaveChangesAsync();
+              return RedirectToAction(nameof(Index));
+           }
+              return View(daiLy);
+       }
+
 
         // GET: DaiLy/Edit/5
         public async Task<IActionResult> Edit(string id)
