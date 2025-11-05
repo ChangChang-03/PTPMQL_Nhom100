@@ -19,6 +19,8 @@ namespace MVC.Data
 
        public DbSet<HeThongPhanPhoi> HeThongPhanPhois { get; set; }
 
+       public DbSet<Student> Students { get; set; }
+
 
     }
 }
