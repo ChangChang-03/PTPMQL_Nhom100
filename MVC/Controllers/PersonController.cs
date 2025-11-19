@@ -1,28 +1,34 @@
+using System;
+using System.IO;
+using System.Linq;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using MVC.Data;
 using MVC.Models;
-using System.Data;
-using System.IO;
+using ClosedXML.Excel;
 
 namespace MVC.Controllers
 {
     public class PersonController : Controller
     {
         private readonly ApplicationDbContext _context;
-        private readonly ExcelProcess _excelProcess = new ExcelProcess();
 
         public PersonController(ApplicationDbContext context)
         {
             _context = context;
         }
 
-        public IActionResult Index()
+        // GET: Person
+        public async Task<IActionResult> Index()
         {
-            var persons = _context.Persons.ToList();
-            return View(persons);
+            return View(await _context.Persons.ToListAsync());
         }
 
+        // ---------------- Upload Excel (ClosedXML) ----------------
+        [HttpGet]
+        public IActionResult Upload() => View();
 
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -30,86 +36,109 @@ namespace MVC.Controllers
         {
             if (file == null || file.Length == 0)
             {
-                ModelState.AddModelError("", "Vui lòng chọn file để upload!");
+                TempData["Error"] = "Vui lòng chọn file để upload!";
                 return RedirectToAction(nameof(Index));
             }
 
-            string fileExtension = Path.GetExtension(file.FileName).ToLowerInvariant();
-            if (fileExtension != ".xls" && fileExtension != ".xlsx")
+            string ext = Path.GetExtension(file.FileName).ToLower();
+            if (ext != ".xlsx" && ext != ".xls")
             {
-                ModelState.AddModelError("", "Vui lòng chọn file Excel (.xls, .xlsx)!");
+                TempData["Error"] = "Chỉ chấp nhận file Excel (.xlsx, .xls)";
                 return RedirectToAction(nameof(Index));
             }
 
-            // Tạo thư mục lưu file tạm nếu chưa có
-            var uploadsFolder = Path.Combine(Directory.GetCurrentDirectory(), "Models", "Uploads", "Excels");
-            if (!Directory.Exists(uploadsFolder))
-                Directory.CreateDirectory(uploadsFolder);
+            string uploads = Path.Combine(Directory.GetCurrentDirectory(), "Uploads", "ExcelsFiles");
+            Directory.CreateDirectory(uploads);
 
-            // Đặt tên file duy nhất
-            var fileName = $"{DateTime.UtcNow:yyyyMMdd_HHmmss}_{Guid.NewGuid()}{fileExtension}";
-            var filePath = Path.Combine(uploadsFolder, fileName);
+            string filePath = Path.Combine(uploads, $"{Guid.NewGuid()}{ext}");
 
-            try
+            using (var stream = new FileStream(filePath, FileMode.Create))
             {
-                // Lưu file Excel lên server
-                using (var stream = new FileStream(filePath, FileMode.Create))
-                {
-                    await file.CopyToAsync(stream);
-                }
+                await file.CopyToAsync(stream);
+            }
 
-                // Đọc dữ liệu Excel
-                DataTable dt = _excelProcess.ExcelToDataTable(filePath);
-                if (dt == null || dt.Rows.Count == 0)
-                {
-                    ModelState.AddModelError("", "File không có dữ liệu hoặc định dạng sai!");
-                    return RedirectToAction(nameof(Index));
-                }
+            int count = 0;
 
-                // Import từng dòng vào DB
-                int count = 0;
-                foreach (DataRow row in dt.Rows)
+            using (var workbook = new XLWorkbook(filePath))
+            {
+                var ws = workbook.Worksheet(1);
+                var rows = ws.RangeUsed().RowsUsed();
+
+                foreach (var row in rows.Skip(1)) // bỏ header
                 {
-                    var ps = new Person
+                    string personId = row.Cell(1).GetString().Trim();
+                    if (string.IsNullOrEmpty(personId)) continue;
+
+                    if (!_context.Persons.Any(p => p.PersonId == personId))
                     {
-                        // map đúng cột
-                        PersonId = row[0]?.ToString(),
-                        FullName = row[1]?.ToString(),
-                        Address = row[2]?.ToString(),
-                        Email = row.Table.Columns.Count > 3 ? row[3]?.ToString() : null
-                    };
+                        var person = new Person
+                        {
+                            PersonId = personId,
+                            FullName = row.Cell(2).GetString(),
+                            Address = row.Cell(3).GetString(),
+                            Email = row.Cell(4).GetString()
+                        };
 
-                    // Nếu dòng bị trống, bỏ qua
-                    if (string.IsNullOrWhiteSpace(ps.FullName))
-                        continue;
-
-                    await _context.Persons.AddAsync(ps);
-                    count++;
-
-                    if (count % 100 == 0)
-                        await _context.SaveChangesAsync(); // lưu theo batch
+                        await _context.Persons.AddAsync(person);
+                        count++;
+                    }
                 }
 
                 await _context.SaveChangesAsync();
-                TempData["Message"] = $"Đã import {count} bản ghi từ file Excel.";
-
-                // Xóa file sau khi dùng xong (tùy chọn)
-                // System.IO.File.Delete(filePath);
-
-                return RedirectToAction(nameof(Index));
             }
-            catch (Exception ex)
-            {
-                ModelState.AddModelError("", "Lỗi khi upload: " + ex.Message);
-                return RedirectToAction(nameof(Index));
-            }
+
+            TempData["Message"] = $"Đã import {count} dòng từ file Excel.";
+            return RedirectToAction(nameof(Index));
         }
 
-        // ---------------- CREATE ----------------
-        public IActionResult Create()
+        // ---------------- Download Excel (ClosedXML) ----------------
+        public IActionResult Download()
         {
-            return View();
+            using (var workbook = new XLWorkbook())
+            {
+                var ws = workbook.Worksheets.Add("Persons");
+
+                // Header
+                ws.Cell(1, 1).Value = "PersonId";
+                ws.Cell(1, 2).Value = "FullName";
+                ws.Cell(1, 3).Value = "Address";
+                ws.Cell(1, 4).Value = "Email";
+
+                // Data
+                var list = _context.Persons.ToList();
+                int row = 2;
+
+                foreach (var p in list)
+                {
+                    ws.Cell(row, 1).Value = p.PersonId;
+                    ws.Cell(row, 2).Value = p.FullName;
+                    ws.Cell(row, 3).Value = p.Address;
+                    ws.Cell(row, 4).Value = p.Email;
+                    row++;
+                }
+
+                using (var stream = new MemoryStream())
+                {
+                    workbook.SaveAs(stream);
+                    stream.Position = 0;
+
+                    return File(stream.ToArray(),
+                        "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                        "Persons.xlsx");
+                }
+            }
         }
+
+        // ---------------- CRUD ----------------
+        public async Task<IActionResult> Details(string id)
+        {
+            if (id == null) return NotFound();
+            var person = await _context.Persons.FirstOrDefaultAsync(p => p.PersonId == id);
+            if (person == null) return NotFound();
+            return View(person);
+        }
+
+        public IActionResult Create() => View();
 
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -117,26 +146,18 @@ namespace MVC.Controllers
         {
             if (ModelState.IsValid)
             {
-                _context.Add(person);
+                _context.Persons.Add(person);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
             return View(person);
         }
 
-        // ---------------- EDIT ----------------
         public async Task<IActionResult> Edit(string id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
+            if (id == null) return NotFound();
             var person = await _context.Persons.FindAsync(id);
-            if (person == null)
-            {
-                return NotFound();
-            }
+            if (person == null) return NotFound();
             return View(person);
         }
 
@@ -144,11 +165,7 @@ namespace MVC.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(string id, [Bind("PersonId,FullName,Address,Email")] Person person)
         {
-            if (id != person.PersonId)
-            {
-                return NotFound();
-            }
-
+            if (id != person.PersonId) return NotFound();
             if (ModelState.IsValid)
             {
                 try
@@ -158,34 +175,21 @@ namespace MVC.Controllers
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!PersonExists(person.PersonId))
-                    {
+                    if (!_context.Persons.Any(e => e.PersonId == id))
                         return NotFound();
-                    }
                     else
-                    {
                         throw;
-                    }
                 }
                 return RedirectToAction(nameof(Index));
             }
             return View(person);
         }
 
-        // ---------------- DELETE ----------------
         public async Task<IActionResult> Delete(string id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var person = await _context.Persons.FirstOrDefaultAsync(m => m.PersonId == id);
-            if (person == null)
-            {
-                return NotFound();
-            }
-
+            if (id == null) return NotFound();
+            var person = await _context.Persons.FirstOrDefaultAsync(p => p.PersonId == id);
+            if (person == null) return NotFound();
             return View(person);
         }
 
@@ -199,16 +203,7 @@ namespace MVC.Controllers
                 _context.Persons.Remove(person);
                 await _context.SaveChangesAsync();
             }
-
             return RedirectToAction(nameof(Index));
-        }
-
-
-        private bool PersonExists(string id)
-        {
-            return _context.Persons.Any(e => e.PersonId == id);
         }
     }
 }
-
-

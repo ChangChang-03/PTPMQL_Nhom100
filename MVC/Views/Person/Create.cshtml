@@ -7,6 +7,15 @@
 <h1>Create</h1>
 
 <h4>Person</h4>
+
+<hr>
+    <form asp-action="Upload" enctype="multipart/form-data">
+    <div class="row form-control">
+        <label class="col-sm-2">Import data from Excel:</label>
+        <input type="file" name="file" class="col-sm-4">
+        <input type="submit" value="Upload" class="btn btn-primary col-sm-1">
+    </div>
+    </form>
 <hr />
 <div class="row">
     <div class="col-md-4">
@@ -14,8 +23,7 @@
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
                 <label asp-for="PersonId" class="control-label"></label>
-                <input asp-for="PersonId" class="form-control" />
-                <span asp-validation-for="PersonId" class="text-danger"></span>
+                <select asp-for="PersonId" class ="form-control" asp-items="ViewBag.PersonId"></select>
             </div>
             <div class="form-group">
                 <label asp-for="FullName" class="control-label"></label>
@@ -28,11 +36,10 @@
                 <span asp-validation-for="Address" class="text-danger"></span>
             </div>
             <div class="form-group">
-                 <label asp-for="Email" class="control-label"></label>
-                 <input asp-for="Email" class="form-control" />
-                 <span asp-validation-for="Email" class="text-danger"></span>
+                <label asp-for="Email" class="control-label"></label>
+                <input asp-for="Email" class="form-control" />
+                <span asp-validation-for="Email" class="text-danger"></span>
             </div>
-
             <div class="form-group">
                 <input type="submit" value="Create" class="btn btn-primary" />
             </div>
