@@ -1,4 +1,6 @@
-@model IEnumerable<MVC.Models.Person>
+@model X.PagedList.IPagedList<MVC.Models.Person>
+@using X.PagedList.Mvc.Core;
+
 
 @{
     ViewData["Title"] = "Index";
@@ -14,17 +16,18 @@
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.PersonId)
+               @Html.DisplayNameFor(modelItem => modelItem.First().PersonId)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.FullName)
+               @Html.DisplayNameFor(modelItem => modelItem.First().FullName)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Address)
+               @Html.DisplayNameFor(modelItem => modelItem.First().Address)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Email)
+               @Html.DisplayNameFor(modelItem => modelItem.First().Email)
             </th>
+
             <th></th>
         </tr>
     </thead>
@@ -52,3 +55,7 @@
 }
     </tbody>
 </table>
+
+<div>
+    @Html.PagedListPager(Model, page => Url.Action("Index", new { page }))
+</div>

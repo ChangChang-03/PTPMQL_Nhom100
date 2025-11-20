@@ -1,3 +1,4 @@
+using System.Security.Cryptography.X509Certificates;
 using System;
 using System.IO;
 using System.Linq;
@@ -8,6 +9,7 @@ using Microsoft.EntityFrameworkCore;
 using MVC.Data;
 using MVC.Models;
 using ClosedXML.Excel;
+using X.PagedList; 
 
 namespace MVC.Controllers
 {
@@ -21,10 +23,28 @@ namespace MVC.Controllers
         }
 
         // GET: Person
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(int? page)
         {
-            return View(await _context.Persons.ToListAsync());
+            int pageNumber = page ?? 1;
+            int pageSize = 5;          
+
+            // Lấy dữ liệu từ DB
+            var query = _context.Persons.OrderBy(p => p.PersonId);
+
+            // Tổng số bản ghi
+            int totalCount = await query.CountAsync();
+
+            // Lấy bản ghi cho page hiện tại
+            var items = await query.Skip((pageNumber - 1) * pageSize)
+                                   .Take(pageSize)
+                                   .ToListAsync();
+
+            // Chuyển List<Person> sang IPagedList<Person>
+            var pagedList = new StaticPagedList<Person>(items, pageNumber, pageSize, totalCount);
+
+            return View(pagedList);
         }
+    
 
         // ---------------- Upload Excel (ClosedXML) ----------------
         [HttpGet]
