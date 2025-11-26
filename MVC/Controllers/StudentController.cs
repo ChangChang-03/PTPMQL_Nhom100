@@ -44,18 +44,18 @@ namespace MVC.Controllers
         }
 
         // GET: Student/Create
-     public IActionResult Create()
+        public IActionResult Create()
         {
             {
-        var lastSTD = _context.Students
-            .OrderByDescending(s => s.MaSinhVien)
-            .FirstOrDefault();
+            var lastSTD = _context.Students
+                .OrderByDescending(s => s.MaSinhVien)
+                .FirstOrDefault();
 
-        var gen = new MVC.Models.Helpers.GenCode();
-            string newCode = gen.AutoGenCode(lastSTD?.MaSinhVien, "STD", 3); 
+            var gen = new MVC.Models.Helpers.GenCode();
+                string newCode = gen.AutoGenCode(lastSTD?.MaSinhVien, "STD", 3); 
 
-        ViewBag.NewCode = newCode;
-        return View();
+            ViewBag.NewCode = newCode;
+            return View();
             }
         }
 

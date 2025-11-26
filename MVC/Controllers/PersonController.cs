@@ -1,4 +1,3 @@
-using System.Security.Cryptography.X509Certificates;
 using System;
 using System.IO;
 using System.Linq;
@@ -6,10 +5,11 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using ClosedXML.Excel;
 using MVC.Data;
 using MVC.Models;
-using ClosedXML.Excel;
-using X.PagedList; 
+using X.PagedList;
 
 namespace MVC.Controllers
 {
@@ -22,31 +22,37 @@ namespace MVC.Controllers
             _context = context;
         }
 
-        // GET: Person
-        public async Task<IActionResult> Index(int? page)
+        // ---------------- Phân trang  ----------------
+        public async Task<IActionResult> Index(int? page, int? PageSize)
         {
             int pageNumber = page ?? 1;
-            int pageSize = 5;          
+            int size = PageSize ?? 5;
 
-            // Lấy dữ liệu từ DB
             var query = _context.Persons.OrderBy(p => p.PersonId);
 
-            // Tổng số bản ghi
             int totalCount = await query.CountAsync();
 
-            // Lấy bản ghi cho page hiện tại
-            var items = await query.Skip((pageNumber - 1) * pageSize)
-                                   .Take(pageSize)
-                                   .ToListAsync();
+            var items = await query.Skip((pageNumber - 1) * size)
+                                .Take(size)
+                                .ToListAsync();
 
-            // Chuyển List<Person> sang IPagedList<Person>
-            var pagedList = new StaticPagedList<Person>(items, pageNumber, pageSize, totalCount);
+            var pagedList = new StaticPagedList<Person>(items, pageNumber, size, totalCount);
+
+            ViewBag.PageSize = new SelectList(new List<SelectListItem>
+            {
+                new SelectListItem { Value = "3", Text = "3" },
+                new SelectListItem { Value = "5", Text = "5" },
+                new SelectListItem { Value = "10", Text = "10" },
+                new SelectListItem { Value = "15", Text = "15" },
+                new SelectListItem { Value = "25", Text = "25" },
+                new SelectListItem { Value = "50", Text = "50" }
+            }, "Value", "Text", size); 
+
 
             return View(pagedList);
         }
-    
 
-        // ---------------- Upload Excel (ClosedXML) ----------------
+        // ---------------- UPLOAD EXCEL ----------------
         [HttpGet]
         public IActionResult Upload() => View();
 
@@ -69,7 +75,6 @@ namespace MVC.Controllers
 
             string uploads = Path.Combine(Directory.GetCurrentDirectory(), "Uploads", "ExcelsFiles");
             Directory.CreateDirectory(uploads);
-
             string filePath = Path.Combine(uploads, $"{Guid.NewGuid()}{ext}");
 
             using (var stream = new FileStream(filePath, FileMode.Create))
@@ -78,7 +83,6 @@ namespace MVC.Controllers
             }
 
             int count = 0;
-
             using (var workbook = new XLWorkbook(filePath))
             {
                 var ws = workbook.Worksheet(1);
@@ -111,7 +115,7 @@ namespace MVC.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-        // ---------------- Download Excel (ClosedXML) ----------------
+        // ---------------- DOWNLOAD EXCEL ----------------
         public IActionResult Download()
         {
             using (var workbook = new XLWorkbook())
@@ -125,7 +129,7 @@ namespace MVC.Controllers
                 ws.Cell(1, 4).Value = "Email";
 
                 // Data
-                var list = _context.Persons.ToList();
+                var list = _context.Persons.OrderBy(p => p.PersonId).ToList();
                 int row = 2;
 
                 foreach (var p in list)
@@ -150,14 +154,7 @@ namespace MVC.Controllers
         }
 
         // ---------------- CRUD ----------------
-        public async Task<IActionResult> Details(string id)
-        {
-            if (id == null) return NotFound();
-            var person = await _context.Persons.FirstOrDefaultAsync(p => p.PersonId == id);
-            if (person == null) return NotFound();
-            return View(person);
-        }
-
+        [HttpGet]
         public IActionResult Create() => View();
 
         [HttpPost]
@@ -166,7 +163,7 @@ namespace MVC.Controllers
         {
             if (ModelState.IsValid)
             {
-                _context.Persons.Add(person);
+                await _context.Persons.AddAsync(person);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }

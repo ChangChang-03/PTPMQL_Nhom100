@@ -1,6 +1,6 @@
-@model X.PagedList.IPagedList<MVC.Models.Person>
-@using X.PagedList.Mvc.Core;
-
+@using X.PagedList
+@using X.PagedList.Mvc.Core
+@model IPagedList<MVC.Models.Person>
 
 @{
     ViewData["Title"] = "Index";
@@ -9,53 +9,66 @@
 <h1>Index</h1>
 
 <p>
-    <a asp-action="Create">Create New</a>
-    <a class="btn btn-success" asp-action="Download">Download</a>
+    <a asp-action="Create" class="btn btn-primary">Create New</a>
+    <a asp-action="Download" class="btn btn-success">Download</a>
 </p>
+
 <table class="table">
     <thead>
         <tr>
-            <th>
-               @Html.DisplayNameFor(modelItem => modelItem.First().PersonId)
-            </th>
-            <th>
-               @Html.DisplayNameFor(modelItem => modelItem.First().FullName)
-            </th>
-            <th>
-               @Html.DisplayNameFor(modelItem => modelItem.First().Address)
-            </th>
-            <th>
-               @Html.DisplayNameFor(modelItem => modelItem.First().Email)
-            </th>
-
-            <th></th>
+            <th>@Html.DisplayNameFor(m => m.First().PersonId)</th>
+            <th>@Html.DisplayNameFor(m => m.First().FullName)</th>
+            <th>@Html.DisplayNameFor(m => m.First().Address)</th>
+            <th>@Html.DisplayNameFor(m => m.First().Email)</th>
+            <th>Actions</th>
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.PersonId)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.FullName)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Address)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Email)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.PersonId">Edit</a> |
-                
-                <a asp-action="Delete" asp-route-id="@item.PersonId">Delete</a>
-            </td>
-        </tr>
-}
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@item.PersonId</td>
+                <td>@item.FullName</td>
+                <td>@item.Address</td>
+                <td>@item.Email</td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@item.PersonId">Edit</a> |
+                    <a asp-action="Delete" asp-route-id="@item.PersonId">Delete</a>
+                </td>
+            </tr>
+        }
     </tbody>
 </table>
 
-<div>
-    @Html.PagedListPager(Model, page => Url.Action("Index", new { page }))
-</div>
+@using (Html.BeginForm("Index", "Person", FormMethod.Get, new { id = "form1" }))
+{
+    <div class="row">
+        <div class="col-md-11">
+        @Html.PagedListPager(
+            Model,
+            page => Url.Action("Index", new { page, pageSize = ViewBag.psize }),
+            new PagedListRenderOptions
+            {
+                LiElementClasses = new[] { "page-item" },
+                PageClasses = new[] { "page-link" },
+                UlElementClasses = new[] { "pagination", "justify-content-left", "mt-3" },
+                DisplayLinkToPreviousPage = PagedListDisplayMode.Always,
+                DisplayLinkToNextPage = PagedListDisplayMode.Always,
+                MaximumPageNumbersToDisplay = 5
+            }
+        )
+        </div>
+        <div class="col-md-1">
+            @Html.DropDownList("pageSize", (SelectList)ViewBag.PageSize, new { @class = "form-select" })
+        </div>
+    </div>
+}
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    $(document).ready(function () {
+        $("#pageSize").change(function () {
+            $("#form1").submit();
+        });
+    });
+</script>
