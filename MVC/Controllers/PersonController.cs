@@ -88,7 +88,7 @@ namespace MVC.Controllers
                 var ws = workbook.Worksheet(1);
                 var rows = ws.RangeUsed().RowsUsed();
 
-                foreach (var row in rows.Skip(1)) // bỏ header
+                foreach (var row in rows.Skip(1)) 
                 {
                     string personId = row.Cell(1).GetString().Trim();
                     if (string.IsNullOrEmpty(personId)) continue;

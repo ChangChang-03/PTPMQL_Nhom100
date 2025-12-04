@@ -1,17 +1,25 @@
-using MVC.Data;
-using OfficeOpenXml;
 using Microsoft.EntityFrameworkCore;
+using VicemMVCIdentity.MVC.Areas.Identity.Data;
 
 var builder = WebApplication.CreateBuilder(args);
 
+// Connection string cho DbContext của MVC.Data
+var mvcConnectionString = builder.Configuration.GetConnectionString("DefaultConnection"); 
 
-builder.Services.AddDbContext<ApplicationDbContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+builder.Services.AddDbContext<MVC.Data.ApplicationDbContext>(options =>
+    options.UseSqlServer(mvcConnectionString));
 
-builder.Services.AddControllersWithViews();
+// Identity DbContext
+builder.Services.AddDbContext<VicemMVCIdentity.MVC.Areas.Identity.Data.ApplicationDbContext>(options =>
+    options.UseSqlServer(mvcConnectionString));
+
+builder.Services.AddDefaultIdentity<VicemMVCIdentity.MVC.Areas.Identity.Data.ApplicationUser>()
+    .AddEntityFrameworkStores<VicemMVCIdentity.MVC.Areas.Identity.Data.ApplicationDbContext>();
+
 
 var app = builder.Build();
 
+// Middleware
 if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Home/Error");
@@ -22,12 +30,13 @@ app.UseHttpsRedirection();
 app.UseStaticFiles();
 
 app.UseRouting();
-
+app.UseAuthentication(); // thêm
 app.UseAuthorization();
 
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
 
-app.Run();
+app.MapRazorPages(); // cần cho Identity
 
+app.Run();
