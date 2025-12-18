@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using MVC.Models;
-
+using MVC.Models.Entities;
+using MVC.Models.ViewModels;
 namespace MVC.Data
 {
     public class ApplicationDbContext : DbContext
@@ -15,12 +16,21 @@ namespace MVC.Data
 
         public DbSet<Employee> Employees { get; set; }
 
+        public DbSet<MemberUnit> MemberUnits { get; set; }
+
         public DbSet<DaiLy> DaiLys { get; set; }
 
         public DbSet<HeThongPhanPhoi> HeThongPhanPhois { get; set; }
 
         public DbSet<Student> Students { get; set; }
 
-
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            base.OnModelCreating(modelBuilder);
+            
+            modelBuilder.Entity<Employee>().ToTable("Employees");
+        }
     }
+    
+
 }

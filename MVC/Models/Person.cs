@@ -9,6 +9,7 @@ namespace MVC.Models
     {
         
         [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public string PersonId { get; set; }
 
         public string FullName { get; set; } = string.Empty;

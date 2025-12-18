@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging;
-using VicemMVCIdentity.MVC.Areas.Identity.Data; //thêm namespace ApplicationUser
+using MVC.Areas.Identity.Data; //thêm namespace ApplicationUser
 
 namespace MVC.Areas.Identity.Pages.Account
 {

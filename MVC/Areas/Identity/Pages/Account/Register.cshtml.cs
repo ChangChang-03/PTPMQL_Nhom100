@@ -12,7 +12,7 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.Extensions.Logging;
 using System.ComponentModel.DataAnnotations;
 
-using VicemMVCIdentity.MVC.Areas.Identity.Data;
+using MVC.Areas.Identity.Data;
 
 namespace MVC.Areas.Identity.Pages.Account
 {

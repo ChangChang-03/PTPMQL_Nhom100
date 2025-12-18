@@ -9,7 +9,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging;
-using VicemMVCIdentity.MVC.Areas.Identity.Data; // Thêm namespace của ApplicationUser
+using MVC.Areas.Identity.Data; // Thêm namespace của ApplicationUser
 
 namespace MVC.Areas.Identity.Pages.Account
 {
